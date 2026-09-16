@@ -1,4 +1,5 @@
 import xml.etree.ElementTree as ET
+from datetime import datetime
 from email.utils import parsedate_to_datetime
 
 import httpx
@@ -31,7 +32,11 @@ def parse_trending(html: str) -> list[dict]:
 
 def fetch_trending() -> list[dict]:
     response = httpx.get("https://github.com/trending?since=daily")
-    return parse_trending(response.text)
+    items = parse_trending(response.text)
+    today = datetime.now().date().isoformat()
+    for item in items:
+        item["retrieved_on"] = today
+    return items
 
 
 def parse_hn(xml: str) -> list[dict]:
@@ -51,4 +56,8 @@ def parse_hn(xml: str) -> list[dict]:
 
 def fetch_hn() -> list[dict]:
     response = httpx.get("https://news.ycombinator.com/rss")
-    return parse_hn(response.text)
+    items = parse_hn(response.text)
+    today = datetime.now().date().isoformat()
+    for item in items:
+        item["retrieved_on"] = today
+    return items
