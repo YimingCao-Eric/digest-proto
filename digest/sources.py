@@ -15,11 +15,15 @@ def parse_trending(html: str) -> list[dict]:
         stars = row.select_one("span.float-sm-right")
         repos.append(
             {
-                "full_name": href.strip("/"),
+                "source": "GitHub Trending",
+                "title": href.strip("/"),
                 "url": "https://github.com" + href,
-                "description": " ".join(description.get_text().split()) if description else "",
-                "language": language.get_text(strip=True) if language else "",
-                "stars_today": int(stars.get_text().split()[0].replace(",", "")),
+                "published_at": None,
+                "extra": {
+                    "language": language.get_text(strip=True) if language else "",
+                    "stars_today": int(stars.get_text().split()[0].replace(",", "")),
+                    "description": " ".join(description.get_text().split()) if description else "",
+                },
             }
         )
     return repos

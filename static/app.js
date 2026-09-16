@@ -12,15 +12,15 @@ async function render() {
 
     const link = document.createElement("a");
     link.href = item.url;
-    link.textContent = item.full_name;
+    link.textContent = item.title;
     row.appendChild(link);
 
     const meta = document.createElement("div");
-    meta.textContent = item.stars_today + " stars today · " + item.language;
+    meta.textContent = item.extra.stars_today + " stars today · " + item.extra.language;
     row.appendChild(meta);
 
     const description = document.createElement("p");
-    description.textContent = item.description;
+    description.textContent = item.extra.description;
     row.appendChild(description);
 
     list.appendChild(row);
