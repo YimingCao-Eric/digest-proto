@@ -1,3 +1,15 @@
+function formatPublished(published) {
+  const date = new Date(published);
+  const minutes = (Date.now() - date.getTime()) / 60000;
+  if (minutes < 60) {
+    return Math.floor(minutes) + "m ago";
+  }
+  if (minutes < 24 * 60) {
+    return Math.floor(minutes / 60) + "h ago";
+  }
+  return date.toLocaleDateString();
+}
+
 function renderItem(item) {
   const row = document.createElement("li");
 
@@ -21,6 +33,10 @@ function renderItem(item) {
     discussion.href = item.extra.comments;
     discussion.textContent = "discussion";
     row.appendChild(discussion);
+
+    const published = document.createElement("span");
+    published.textContent = " " + formatPublished(item.published_at);
+    row.appendChild(published);
   }
 
   return row;
@@ -30,7 +46,7 @@ async function render() {
   const response = await fetch("/api/items");
   const data = await response.json();
 
-  document.getElementById("fetched-at").textContent = "Fetched at " + data.fetched_at;
+  document.getElementById("fetched-at").textContent = new Date(data.fetched_at).toLocaleDateString();
 
   const container = document.getElementById("items");
   container.replaceChildren();
