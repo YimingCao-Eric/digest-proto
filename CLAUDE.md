@@ -4,8 +4,7 @@
 - Shell: Windows PowerShell. This project does not run under WSL.
 - Package manager: uv. Add deps with `uv add <pkg>`. Never `pip install`.
 - Python package: `digest`.
-- Run command: <filled in at Stage 1>. Never run the app any other way.
-- Front end: plain HTML/CSS/JS. No React, no build step, no bundler.
+- Run command: `uv run uvicorn digest.app:app --reload`. Never run the app any other way.- Front end: plain HTML/CSS/JS. No React, no build step, no bundler.
 - Output goes to `out/`. Config lives in `config/`. Nothing lives in `__init__.py`.
 
 ## Project rules
