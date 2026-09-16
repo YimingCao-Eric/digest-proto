@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from digest.sources import fetch_trending
 
@@ -13,3 +14,6 @@ def get_items():
         "fetched_at": datetime.now(timezone.utc).isoformat(),
         "items": fetch_trending(),
     }
+
+
+app.mount("/", StaticFiles(directory="static", html=True))
