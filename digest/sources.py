@@ -20,6 +20,7 @@ def parse_trending(html: str) -> list[dict]:
                 "title": href.strip("/"),
                 "url": "https://github.com" + href,
                 "published_at": None,
+                "body": "",
                 "extra": {
                     "language": language.get_text(strip=True) if language else "",
                     "stars_today": int(stars.get_text().split()[0].replace(",", "")),
@@ -30,13 +31,16 @@ def parse_trending(html: str) -> list[dict]:
     return repos
 
 
-def fetch_trending() -> list[dict]:
-    response = httpx.get("https://github.com/trending?since=daily")
-    items = parse_trending(response.text)
+def stamp_retrieved(items: list[dict]) -> list[dict]:
     today = datetime.now().date().isoformat()
     for item in items:
         item["retrieved_on"] = today
     return items
+
+
+def fetch_trending() -> list[dict]:
+    response = httpx.get("https://github.com/trending?since=daily")
+    return stamp_retrieved(parse_trending(response.text))
 
 
 def strip_html(markup: str) -> str:
@@ -68,11 +72,7 @@ def parse_feed(text: str, label: str) -> list[dict]:
 
 def fetch_feed(url: str, label: str, max_items: int) -> list[dict]:
     response = httpx.get(url)
-    items = parse_feed(response.text, label)
-    today = datetime.now().date().isoformat()
-    for item in items:
-        item["retrieved_on"] = today
-    return items[:max_items]
+    return stamp_retrieved(parse_feed(response.text, label))[:max_items]
 
 
 def parse_hf_models(text: str) -> list[dict]:
@@ -100,8 +100,4 @@ def parse_hf_models(text: str) -> list[dict]:
 
 def fetch_hf_models() -> list[dict]:
     response = httpx.get("https://huggingface.co/api/models?sort=trendingScore&limit=20")
-    items = parse_hf_models(response.text)
-    today = datetime.now().date().isoformat()
-    for item in items:
-        item["retrieved_on"] = today
-    return items
+    return stamp_retrieved(parse_hf_models(response.text))
