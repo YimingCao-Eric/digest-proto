@@ -1,3 +1,4 @@
+import json
 from datetime import datetime, timezone
 
 import feedparser
@@ -72,3 +73,35 @@ def fetch_feed(url: str, label: str, max_items: int) -> list[dict]:
     for item in items:
         item["retrieved_on"] = today
     return items[:max_items]
+
+
+def parse_hf_models(text: str) -> list[dict]:
+    models = []
+    for entry in json.loads(text):
+        models.append(
+            {
+                "source": "Hugging Face Trending",
+                "title": entry["id"],
+                "url": "https://huggingface.co/" + entry["id"],
+                "published_at": None,
+                "body": "",
+                "extra": {
+                    "likes": entry["likes"],
+                    "downloads": entry["downloads"],
+                    "trending_score": entry["trendingScore"],
+                    "pipeline_tag": entry.get("pipeline_tag", ""),
+                    "library_name": entry.get("library_name", ""),
+                    "tags": entry["tags"],
+                },
+            }
+        )
+    return models
+
+
+def fetch_hf_models() -> list[dict]:
+    response = httpx.get("https://huggingface.co/api/models?sort=trendingScore&limit=20")
+    items = parse_hf_models(response.text)
+    today = datetime.now().date().isoformat()
+    for item in items:
+        item["retrieved_on"] = today
+    return items
