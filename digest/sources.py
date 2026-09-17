@@ -1,5 +1,6 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
+import feedparser
 import httpx
 from bs4 import BeautifulSoup
 
@@ -35,3 +36,39 @@ def fetch_trending() -> list[dict]:
     for item in items:
         item["retrieved_on"] = today
     return items
+
+
+def strip_html(markup: str) -> str:
+    return " ".join(BeautifulSoup(markup, "html.parser").get_text().split())
+
+
+def parse_feed(text: str, label: str) -> list[dict]:
+    items = []
+    for entry in feedparser.parse(text).entries:
+        stamp = entry.get("published_parsed") or entry.get("updated_parsed")
+        bodies = [block.get("value", "") for block in entry.get("content", [])]
+        bodies.append(entry.get("summary", ""))
+        items.append(
+            {
+                "source": label,
+                "title": entry.title,
+                "url": entry.link,
+                "published_at": datetime(*stamp[:6], tzinfo=timezone.utc).isoformat() if stamp else None,
+                "body": max((strip_html(body) for body in bodies), key=len),
+                "extra": {
+                    "authors": [a["name"] for a in entry.get("authors", []) if a.get("name")],
+                    "tags": [t["term"] for t in entry.get("tags", []) if t.get("term")],
+                },
+            }
+        )
+    items.sort(key=lambda item: (item["published_at"] is not None, item["published_at"] or ""), reverse=True)
+    return items
+
+
+def fetch_feed(url: str, label: str, max_items: int) -> list[dict]:
+    response = httpx.get(url)
+    items = parse_feed(response.text, label)
+    today = datetime.now().date().isoformat()
+    for item in items:
+        item["retrieved_on"] = today
+    return items[:max_items]
