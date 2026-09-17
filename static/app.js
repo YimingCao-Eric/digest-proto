@@ -26,6 +26,18 @@ function renderItem(item) {
     const description = document.createElement("p");
     description.textContent = item.extra.description;
     row.appendChild(description);
+  } else {
+    if (item.published_at !== null) {
+      const published = document.createElement("div");
+      published.textContent = formatPublished(item.published_at);
+      row.appendChild(published);
+    }
+
+    if (item.body) {
+      const body = document.createElement("p");
+      body.textContent = item.body.slice(0, 300) + (item.body.length > 300 ? "…" : "");
+      row.appendChild(body);
+    }
   }
 
   return row;
