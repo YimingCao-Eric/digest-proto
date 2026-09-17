@@ -1,6 +1,4 @@
-import xml.etree.ElementTree as ET
 from datetime import datetime
-from email.utils import parsedate_to_datetime
 
 import httpx
 from bs4 import BeautifulSoup
@@ -33,30 +31,6 @@ def parse_trending(html: str) -> list[dict]:
 def fetch_trending() -> list[dict]:
     response = httpx.get("https://github.com/trending?since=daily")
     items = parse_trending(response.text)
-    today = datetime.now().date().isoformat()
-    for item in items:
-        item["retrieved_on"] = today
-    return items
-
-
-def parse_hn(xml: str) -> list[dict]:
-    items = []
-    for item in ET.fromstring(xml).iterfind("channel/item"):
-        items.append(
-            {
-                "source": "Hacker News",
-                "title": item.findtext("title"),
-                "url": item.findtext("link"),
-                "published_at": parsedate_to_datetime(item.findtext("pubDate")).isoformat(),
-                "extra": {"comments": item.findtext("comments")},
-            }
-        )
-    return items
-
-
-def fetch_hn() -> list[dict]:
-    response = httpx.get("https://news.ycombinator.com/rss")
-    items = parse_hn(response.text)
     today = datetime.now().date().isoformat()
     for item in items:
         item["retrieved_on"] = today

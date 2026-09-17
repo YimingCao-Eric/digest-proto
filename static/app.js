@@ -26,17 +26,6 @@ function renderItem(item) {
     const description = document.createElement("p");
     description.textContent = item.extra.description;
     row.appendChild(description);
-  } else {
-    row.appendChild(document.createTextNode(" "));
-
-    const discussion = document.createElement("a");
-    discussion.href = item.extra.comments;
-    discussion.textContent = "discussion";
-    row.appendChild(discussion);
-
-    const published = document.createElement("span");
-    published.textContent = " " + formatPublished(item.published_at);
-    row.appendChild(published);
   }
 
   return row;

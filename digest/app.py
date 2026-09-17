@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
-from digest.sources import fetch_hn, fetch_trending
+from digest.sources import fetch_trending
 
 app = FastAPI()
 
@@ -12,7 +12,7 @@ app = FastAPI()
 def get_items():
     return {
         "fetched_at": datetime.now(timezone.utc).isoformat(),
-        "items": fetch_trending() + fetch_hn(),
+        "items": fetch_trending(),
     }
 
 
