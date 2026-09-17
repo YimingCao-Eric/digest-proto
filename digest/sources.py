@@ -39,8 +39,11 @@ def stamp_retrieved(items: list[dict]) -> list[dict]:
 
 
 def fetch_trending() -> list[dict]:
-    response = httpx.get("https://github.com/trending?since=daily")
-    return stamp_retrieved(parse_trending(response.text))
+    response = httpx.get("https://github.com/trending?since=daily", follow_redirects=True)
+    items = parse_trending(response.text)
+    if not items:
+        raise ValueError("GitHub Trending: 0 items")
+    return stamp_retrieved(items)
 
 
 def strip_html(markup: str) -> str:
@@ -71,8 +74,11 @@ def parse_feed(text: str, label: str) -> list[dict]:
 
 
 def fetch_feed(url: str, label: str, max_items: int) -> list[dict]:
-    response = httpx.get(url)
-    return stamp_retrieved(parse_feed(response.text, label))[:max_items]
+    response = httpx.get(url, follow_redirects=True)
+    items = parse_feed(response.text, label)
+    if not items:
+        raise ValueError(f"{label}: 0 items")
+    return stamp_retrieved(items)[:max_items]
 
 
 def parse_hf_models(text: str) -> list[dict]:
@@ -99,5 +105,8 @@ def parse_hf_models(text: str) -> list[dict]:
 
 
 def fetch_hf_models() -> list[dict]:
-    response = httpx.get("https://huggingface.co/api/models?sort=trendingScore&limit=20")
-    return stamp_retrieved(parse_hf_models(response.text))
+    response = httpx.get("https://huggingface.co/api/models?sort=trendingScore&limit=20", follow_redirects=True)
+    items = parse_hf_models(response.text)
+    if not items:
+        raise ValueError("Hugging Face Trending: 0 items")
+    return stamp_retrieved(items)
