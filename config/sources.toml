@@ -1,0 +1,61 @@
+# Feed sources. Bespoke sources (GitHub Trending, Hugging Face models) are wired in code.
+
+[[source]]
+label = "arXiv cs.AI"
+url = "https://rss.arxiv.org/rss/cs.AI"
+max_items = 20
+
+[[source]]
+label = "arXiv cs.CL"
+url = "https://rss.arxiv.org/rss/cs.CL"
+max_items = 20
+
+[[source]]
+label = "OpenAI"
+url = "https://openai.com/news/rss.xml"
+max_items = 10
+
+[[source]]
+label = "Google DeepMind"
+url = "https://deepmind.google/blog/rss.xml"
+max_items = 10
+
+[[source]]
+label = "Google AI"
+url = "https://blog.google/innovation-and-ai/technology/ai/rss/"
+max_items = 10
+
+[[source]]
+label = "Microsoft Research"
+url = "https://www.microsoft.com/en-us/research/feed/"
+max_items = 10
+
+[[source]]
+label = "NVIDIA Technical Blog"
+url = "https://developer.nvidia.com/blog/feed/"
+max_items = 10
+
+[[source]]
+label = "Hugging Face Blog"
+url = "https://huggingface.co/blog/feed.xml"
+max_items = 10
+
+[[source]]
+label = "Simon Willison"
+url = "https://simonwillison.net/atom/everything/"
+max_items = 10
+
+[[source]]
+label = "LangChain releases"
+url = "https://github.com/langchain-ai/langchain/releases.atom"
+max_items = 5
+
+[[source]]
+label = "OpenAI Agents SDK releases"
+url = "https://github.com/openai/openai-agents-python/releases.atom"
+max_items = 5
+
+[[source]]
+label = "Anthropic SDK releases"
+url = "https://github.com/anthropics/anthropic-sdk-python/releases.atom"
+max_items = 5

@@ -27,16 +27,17 @@ function renderItem(item) {
     description.textContent = item.extra.description;
     row.appendChild(description);
   } else {
-    row.appendChild(document.createTextNode(" "));
+    if (item.published_at !== null) {
+      const published = document.createElement("div");
+      published.textContent = formatPublished(item.published_at);
+      row.appendChild(published);
+    }
 
-    const discussion = document.createElement("a");
-    discussion.href = item.extra.comments;
-    discussion.textContent = "discussion";
-    row.appendChild(discussion);
-
-    const published = document.createElement("span");
-    published.textContent = " " + formatPublished(item.published_at);
-    row.appendChild(published);
+    if (item.body) {
+      const body = document.createElement("p");
+      body.textContent = item.body.slice(0, 300) + (item.body.length > 300 ? "…" : "");
+      row.appendChild(body);
+    }
   }
 
   return row;
